@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  // user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  // user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String
+  email         String       @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+  type          String       @default("user")
+  basket        BasketItem[] @relation("BasketUser")
+  // accounts      Account[]
+  // sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Item {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  oldPrice    Float?
+  category    Category     @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  type        String
+  colours     Colour[]
+  sizes       Size[]
+  mainImage   Image?       @relation("MainImage")
+  images      Image[]      @relation("Images")
+  basket      BasketItem[] @relation("BasketItem")
+
+  @@index([categoryId])
+}
+
+model Image {
+  id           Int    @id @default(autoincrement())
+  url          String
+  item         Item?  @relation(name: "Images", fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  itemId       Int?
+  itemAsMain   Item?  @relation(name: "MainImage", fields: [itemAsMainId], references: [id], onDelete: Cascade)
+  itemAsMainId Int?   @unique
+  colour       String?
+
+  @@index([itemId])
+}
+
+model Colour {
+  id            Int          @id @default(autoincrement())
+  name          String       @unique
+  items         Item[]
+  basket        BasketItem[] @relation("itemColour")
+}
+
+model Size {
+  id            Int          @id @default(autoincrement())
+  name          String       @unique
+  items         Item[]
+  basket        BasketItem[] @relation("itemSize")
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  items Item[]
+}
+
+model BasketItem {
+  item            Item      @relation("BasketItem", fields: [itemId], references: [id], onDelete: Cascade)
+  itemId          Int
+  user            User      @relation("BasketUser", fields: [userId], references: [id])
+  userId          String
+  colour          Colour    @relation("itemColour", fields: [colourId], references: [id])
+  colourId Int    
+  size            Size      @relation("itemSize", fields: [sizeId], references: [id])
+  sizeId          Int
+  quantity        Int
+
+  @@unique([itemId, userId, colourId, sizeId])
+  @@index([userId])
+  @@index([colourId])
+  @@index([sizeId])
+}
+
+model OrderItem {
+  id               Int          @id @default(autoincrement())
+  orderId          String
+  itemId           Int
+  itemName         String
+  itemPrice        Float
+  imageUrl         String
+  userId           String?
+  colour           String
+  size             String
+  quantity         Int
+  amountPaid       Int
+  createdAt        DateTime     @default(now())
+  shippingCost     Int         
+  address          Address      @relation(fields: [addressId], references: [id])
+  addressId        Int  
+
+  @@index([addressId])
+  @@index([itemId])
+}
+
+model Address {
+  id                Int          @id @default(autoincrement())
+  city              String
+  country           String
+  line1             String
+  line2             String?
+  postal_code       String
+  state             String?
+  recipientName     String
+  orderItems        OrderItem[]
+}
+
+model EmailSubscriptions {
+  email             String       @id @unique
+  subscriptionDate  DateTime     @default(now())
+  status            String       @default("subscribed")
+}
