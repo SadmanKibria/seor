@@ -2,21 +2,21 @@ import Image from 'next/image';
 
 export default function CraftsmanshipSection() {
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-12 md:py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-sm uppercase tracking-widest mb-6 text-gray-500">
-            Our Craftsmanship
+            Our Promise
           </h2>
 
-          <h3 className="font-serif text-2xl md:text-3xl font-light mb-8 tracking-wide">
-            Artistry in Every Detail
+          <h3 className="font-serif text-2xl md:text-3xl font-light mb-6 tracking-wide">
+            Quality You Can Afford
           </h3>
 
-          <div className="flex flex-col md:flex-row items-center gap-10">
+          <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="md:w-1/3 order-2 md:order-1">
               <Image
-                src="/placeholder.svg?height=400&width=300"
+                src="/temp-img.jpg?height=400&width=300"
                 alt="Jewelry craftsmanship"
                 width={300}
                 height={400}
@@ -25,19 +25,17 @@ export default function CraftsmanshipSection() {
             </div>
 
             <div className="md:w-2/3 order-1 md:order-2 text-left">
-              <p className="text-gray-600 leading-relaxed mb-6 font-light">
-                Each SEOR piece is meticulously handcrafted by our master
-                artisans, who bring decades of expertise to their work. We
-                source only the finest ethically-obtained materials from
-                brilliant diamonds to lustrous pearls ensuring that every
-                creation meets our exacting standards.
+              <p className="text-gray-600 leading-relaxed mb-5 font-light">
+                At SEOR, we believe beautiful jewelry shouldn't come with a
+                luxury price tag. Each piece is thoughtfully designed and
+                carefully crafted using quality materials that look premium
+                without the markup.
               </p>
               <p className="text-gray-600 leading-relaxed font-light">
-                Our commitment to excellence extends beyond aesthetics. Each
-                piece undergoes rigorous quality control, guaranteeing jewelry
-                that is not only beautiful but built to become an heirloom,
-                passed down through generations as a testament to timeless
-                elegance and superior craftsmanship.
+                We source directly from trusted manufacturers and sell directly
+                to you, cutting out the middlemen and passing the savings on.
+                The result? Stylish, on-trend jewelry that's accessible to
+                everyone, with prices ranging from £10 to £25.
               </p>
             </div>
           </div>
