@@ -1,49 +1,26 @@
-'use client';
-
-import { useState } from 'react';
+import { prisma } from '@/lib/prisma';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
 
-const product = {
-  id: 'silver-hoop-earrings',
-  name: 'Silver Hoop Earrings',
-  price: 14.99,
-  description:
-    'Elegant sterling silver-plated hoop earrings, perfect for everyday wear.',
-  features: [
-    'Nickel-free and hypoallergenic',
-    'Diameter: 3cm',
-    'Sterling silver plating',
-    'Secure clasp fastening',
-  ],
-  images: ['/temp-img.jpg', '/icons/visa.svg'],
-};
-
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const openModal = (index: number) => {
-    setIsModalOpen(true);
-    setCurrentIndex(index);
+interface ProductPageProps {
+  params: {
+    slug: string;
   };
+}
 
-  const closeModal = () => setIsModalOpen(false);
+export default async function ProductPage({ params }: ProductPageProps) {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: params.slug,
+    },
+  });
 
-  const prevImage = () => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? product.images.length - 1 : prev - 1
-    );
-  };
-
-  const nextImage = () => {
-    setCurrentIndex((prev) =>
-      prev === product.images.length - 1 ? 0 : prev + 1
-    );
-  };
+  if (!product) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,41 +30,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
             {/* Product Images */}
             <div>
-              {/* Main Image */}
-              <div
-                className="relative bg-gray-50 flex items-center justify-center p-4 overflow-hidden cursor-zoom-in"
-                onClick={() => openModal(product.images.indexOf(selectedImage))}
-              >
-                <div className="relative w-full max-w-[600px] h-[600px]">
-                  <Image
-                    src={selectedImage}
-                    alt={product.name}
-                    fill
-                    className="object-contain transition-transform duration-500"
-                    priority
-                  />
-                </div>
-              </div>
-
-              {/* Thumbnails */}
-              <div className="flex space-x-4 mt-4">
-                {product.images.map((img, index) => (
-                  <div
-                    key={index}
-                    className="w-20 h-20 border border-gray-200 overflow-hidden cursor-pointer"
-                    onClick={() => {
-                      setSelectedImage(img);
-                    }}
-                  >
-                    <img
-                      src={img}
-                      alt={`${product.name} ${index + 1}`}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                ))}
+              <div className="bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
+                <Image
+                  src={product.images?.[0] || '/placeholder.svg'}
+                  alt={product.name}
+                  width={600}
+                  height={600}
+                  className="w-full h-auto object-contain"
+                  priority
+                />
               </div>
             </div>
 
@@ -106,15 +57,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <p className="text-gray-600 leading-relaxed">
                   {product.description}
                 </p>
-
-                <ul className="space-y-2 text-sm text-gray-600">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <div className="pt-4 space-y-4">
@@ -144,45 +86,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             </div>
           </div>
         </div>
-
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-            <button
-              onClick={closeModal}
-              className="absolute top-6 right-6 text-white text-2xl hover:text-gray-300"
-            >
-              ✕
-            </button>
-
-            {/* Previous button */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 text-white text-4xl hover:text-gray-300"
-            >
-              &#8592;
-            </button>
-
-            {/* Image */}
-            <div className="relative w-full max-w-4xl h-[80vh] flex items-center justify-center">
-              <Image
-                src={product.images[currentIndex]}
-                alt="Zoomed Product"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-
-            {/* Next button */}
-            <button
-              onClick={nextImage}
-              className="absolute right-4 text-white text-4xl hover:text-gray-300"
-            >
-              &#8594;
-            </button>
-          </div>
-        )}
       </main>
       <Footer />
     </div>
