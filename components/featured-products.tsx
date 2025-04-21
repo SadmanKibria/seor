@@ -37,7 +37,7 @@ export default function FeaturedProducts() {
           Trending Now
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {products.map((product) => (
             <div key={product.id} className="group">
               <div className="mb-4 overflow-hidden">

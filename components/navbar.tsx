@@ -30,7 +30,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <NavigationMenu className="mx-auto">
               <NavigationMenuList className="flex gap-8">
                 <NavigationMenuItem>
@@ -62,7 +62,7 @@ export default function Navbar() {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             {/* Search bar */}
             <div className="relative hidden sm:flex items-center">
               <Input

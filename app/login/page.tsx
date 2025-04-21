@@ -9,7 +9,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow flex items-center justify-center bg-gray-50 py-16">
-        <div className="bg-white p-8 rounded-sm shadow-sm w-full max-w-md">
+        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm w-full max-w-md">
           <h1 className="text-2xl font-serif font-light text-center mb-8 tracking-wide">
             Sign In
           </h1>

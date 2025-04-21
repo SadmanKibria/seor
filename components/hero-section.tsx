@@ -9,7 +9,7 @@ export default function HeroSection() {
 
       <div className="container mx-auto max-w-4xl text-center space-y-6">
         {/* Headline */}
-        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light tracking-wide text-gray-900">
+        <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-wide text-gray-900">
           Stylish Jewelry <br className="hidden sm:block" />
           <span className="font-normal">For Modern Women</span>
         </h1>

@@ -17,7 +17,7 @@ export default function CheckoutPage() {
             Enter your details to complete your purchase
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
             {/* Billing Details */}
             <div className="bg-white p-8 rounded-sm shadow-sm space-y-6">
               <h2 className="text-lg font-serif font-light mb-6">

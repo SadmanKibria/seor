@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         {/* Main footer links */}
         <div className="flex flex-col items-center mb-10">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-4 gap-x-8 text-center mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
             <Link
               href="/about"
               className="text-sm text-gray-600 hover:text-gray-900 transition-colors"

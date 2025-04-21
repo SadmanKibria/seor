@@ -13,7 +13,7 @@ export default function CraftsmanshipSection() {
             Quality You Can Afford
           </h3>
 
-          <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="flex flex-col-reverse md:flex-row items-center gap-10">
             <div className="md:w-1/3 order-2 md:order-1">
               <Image
                 src="/temp-img.jpg?height=400&width=300"
