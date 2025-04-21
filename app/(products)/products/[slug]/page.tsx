@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import Navbar from '@/components/navbar';
-import Footer from '@/components/footer';
+import Navbar from '@/components/common/navbar';
+import Footer from '@/components/common/footer';
 
 const product = {
   id: 'silver-hoop-earrings',

@@ -56,7 +56,7 @@ export default function Footer() {
           <div className="flex justify-center space-x-4 mb-8">
             <div className="w-10 h-6 relative grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all">
               <Image
-                src="/icons/visa.svg"
+                src="/images/icons/visa.svg"
                 alt="Visa"
                 width={40}
                 height={24}
@@ -65,7 +65,7 @@ export default function Footer() {
             </div>
             <div className="w-10 h-6 relative grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all">
               <Image
-                src="/icons/mastercard.svg"
+                src="/images/icons/mastercard.svg"
                 alt="Mastercard"
                 width={40}
                 height={24}
