@@ -13,6 +13,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,14 +74,31 @@ export default function Navbar() {
               <Search className="absolute left-2 h-3.5 w-3.5 text-gray-500" />
             </div>
 
-            {/* Account icon */}
-            <Link
-              href="/account"
-              className="flex items-center text-gray-700 transition-colors hover:text-black"
-            >
-              <User className="h-4 w-4" />
-              <span className="sr-only">Account</span>
-            </Link>
+            {/* Account */}
+            <div className="flex items-center">
+              <SignedIn>
+                <div className="relative group">
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox:
+                          'h-6 w-6 transition-transform group-hover:scale-110',
+                      },
+                    }}
+                  />
+                </div>
+              </SignedIn>
+
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <div className="cursor-pointer text-gray-700 hover:text-black transition-colors">
+                    <User className="h-4 w-4" />
+                    <span className="sr-only">Account</span>
+                  </div>
+                </SignInButton>
+              </SignedOut>
+            </div>
 
             {/* Bag icon */}
             <Link
