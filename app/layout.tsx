@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
+import { CartProvider } from '@/app/context/cart-context';
+import { Toaster } from 'sonner';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
 
@@ -31,7 +33,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          {children}
+          <CartProvider>
+            {children}
+            <Toaster richColors position="top-center" />
+          </CartProvider>
         </body>
       </html>
     </ClerkProvider>
