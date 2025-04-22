@@ -1,9 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { createOrder } from '@/app/actions/create-order';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function CheckoutForm() {
+  const router = useRouter();
+  const { user } = useUser(); // Get Clerk user
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -27,14 +33,13 @@ export default function CheckoutForm() {
       [name]: value,
     }));
 
-    // Clear error message when user starts typing
     setErrors((prev) => ({
       ...prev,
       [name]: '',
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const newErrors: typeof errors = {
@@ -45,7 +50,7 @@ export default function CheckoutForm() {
       postcode: '',
     };
 
-    // Simple Validation
+    // Validation
     if (!formData.fullName.trim())
       newErrors.fullName = 'Full Name is required.';
     if (!formData.email.trim()) newErrors.email = 'Email is required.';
@@ -53,7 +58,6 @@ export default function CheckoutForm() {
     if (!formData.city.trim()) newErrors.city = 'City is required.';
     if (!formData.postcode.trim()) newErrors.postcode = 'Postcode is required.';
 
-    // Check if there are any errors
     const hasErrors = Object.values(newErrors).some((error) => error !== '');
 
     if (hasErrors) {
@@ -61,12 +65,32 @@ export default function CheckoutForm() {
       return;
     }
 
-    // If no errors, proceed
-    console.log('Submitting Checkout Form:', formData);
+    // 🛒 MOCK DATA for now - replace with your real cart items and total
+    const cartItems = [
+      { productId: 'abc123', quantity: 1 },
+      { productId: 'def456', quantity: 2 },
+    ];
+    const totalPrice = 100; // Example £100 — replace with your cart total!
 
-    toast.success('Order placed successfully!');
+    if (!user?.id) {
+      toast.error('You must be logged in to place an order.');
+      return;
+    }
 
-    // Later: send data to backend or Stripe session
+    try {
+      await createOrder({
+        userId: user.id,
+        totalPrice,
+        cartItems,
+      });
+
+      toast.success('Order placed successfully!');
+      router.push('/thank-you');
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error('Something went wrong. Please try again.');
+    }
   }
 
   return (
@@ -168,7 +192,7 @@ export default function CheckoutForm() {
             type="submit"
             className="w-full bg-gray-900 text-white py-3 text-sm rounded-none hover:bg-black transition"
           >
-            Continue to Payment
+            Place Order
           </button>
         </div>
       </div>
