@@ -14,3 +14,16 @@ export async function getProducts() {
 
   return products;
 }
+
+export async function addProduct(data: {
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  category: string;
+  images: string[];
+}) {
+  await prisma.product.create({
+    data,
+  });
+}
