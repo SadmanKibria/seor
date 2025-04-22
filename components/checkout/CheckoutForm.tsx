@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function CheckoutForm() {
   const [formData, setFormData] = useState({
@@ -62,6 +63,8 @@ export default function CheckoutForm() {
 
     // If no errors, proceed
     console.log('Submitting Checkout Form:', formData);
+
+    toast.success('Order placed successfully!');
 
     // Later: send data to backend or Stripe session
   }
