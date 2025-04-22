@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { addProduct } from '@/lib/products';
+import { createProduct } from '@/app/actions/create-product';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -28,11 +28,12 @@ export default function AddProductPage() {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const imagesArray = data.images.split(',').map((url) => url.trim());
-    await addProduct({
+    await createProduct({
       ...data,
       images: imagesArray,
     });
     router.push('/admin/products');
+    router.refresh();
   }
 
   return (
@@ -70,6 +71,7 @@ export default function AddProductPage() {
           <label className="block mb-1 font-semibold">Price (£)</label>
           <input
             type="number"
+            step="0.01"
             {...register('price')}
             className="w-full border p-2 rounded"
           />
