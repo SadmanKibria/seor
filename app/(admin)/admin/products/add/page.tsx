@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { createProduct } from '@/app/actions/create-product';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -32,6 +33,7 @@ export default function AddProductPage() {
       ...data,
       images: imagesArray,
     });
+    toast.success('Product created successfully!');
     router.push('/admin/products');
     router.refresh();
   }
