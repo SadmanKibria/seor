@@ -5,6 +5,7 @@ import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
 import CheckoutForm from '@/components/checkout/CheckoutForm';
 import OrderSummary from '@/components/checkout/OrderSummary';
+import { CheckoutStripeForm } from '@/components/checkout/CheckoutStripeForm';
 
 export default function CheckoutPage() {
   return (
@@ -24,6 +25,12 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
               <CheckoutForm />
               <OrderSummary />
+            </div>
+
+            {/* Stripe Payment Section */}
+            <div className="max-w-2xl mx-auto mt-12">
+              <h2 className="text-xl font-semibold mb-4">Payment</h2>
+              <CheckoutStripeForm amount={5000} /> {/* temporary amount */}
             </div>
           </SignedIn>
 
