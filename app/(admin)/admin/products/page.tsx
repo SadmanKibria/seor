@@ -1,5 +1,5 @@
-// app/(admin)/admin/products/page.tsx
 import { getProducts } from '@/lib/products';
+import { DeleteProductButton } from '@/components/admin/DeleteProductButton';
 import { formatPrice } from '@/lib/format-price';
 import Link from 'next/link';
 
@@ -54,9 +54,7 @@ export default async function AdminProductsPage() {
                     >
                       Edit
                     </Link>
-                    <button className="text-red-600 hover:underline text-sm">
-                      Delete
-                    </button>
+                    <DeleteProductButton productId={product.id} />
                   </td>
                 </tr>
               ))}
