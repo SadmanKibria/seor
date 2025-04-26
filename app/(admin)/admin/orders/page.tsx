@@ -18,6 +18,7 @@ export default async function AdminOrdersPage() {
               <tr>
                 <th className="py-3 px-6 text-left">Order ID</th>
                 <th className="py-3 px-6 text-left">Customer</th>
+                <th className="py-3 px-6 text-left">Address</th>{' '}
                 <th className="py-3 px-6 text-left">Amount</th>
                 <th className="py-3 px-6 text-left">Status</th>
                 <th className="py-3 px-6 text-left">Date</th>
@@ -34,8 +35,11 @@ export default async function AdminOrdersPage() {
                       {order.id.slice(0, 8)}...
                     </Link>
                   </td>
+                  <td className="py-3 px-6">{order.fullName || 'Unknown'}</td>
                   <td className="py-3 px-6">
-                    {order.user?.email || 'Unknown'}
+                    {order.address
+                      ? `${order.address.length > 20 ? order.address.slice(0, 20) + '...' : order.address}`
+                      : 'No address'}
                   </td>
                   <td className="py-3 px-6">{formatPrice(order.totalPrice)}</td>
                   <td className="py-3 px-6">
