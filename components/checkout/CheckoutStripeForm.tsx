@@ -14,12 +14,19 @@ import { useCart } from '@/app/context/cart-context';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { BillingData } from './CheckoutForm';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-export function CheckoutStripeForm({ amount }: { amount: number }) {
+export function CheckoutStripeForm({
+  amount,
+  billingData,
+}: {
+  amount: number;
+  billingData: BillingData;
+}) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,12 +44,12 @@ export function CheckoutStripeForm({ amount }: { amount: number }) {
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <StripeCheckoutForm />
+      <StripeCheckoutForm billingData={billingData} />
     </Elements>
   );
 }
 
-function StripeCheckoutForm() {
+function StripeCheckoutForm({ billingData }: { billingData: BillingData }) {
   const stripe = useStripe();
   const elements = useElements();
   const { items, clearCart } = useCart();
@@ -59,11 +66,11 @@ function StripeCheckoutForm() {
       confirmParams: {
         return_url: `${window.location.origin}/thank-you`,
       },
-      redirect: 'if_required', // prevent full page reload
+      redirect: 'if_required', // Prevent full-page reload
     });
 
     if (error) {
-      console.log(error.message);
+      console.error(error.message);
       toast.error(error.message || 'Payment failed.');
       return;
     }
@@ -80,9 +87,10 @@ function StripeCheckoutForm() {
             productId: item.id,
             quantity: item.quantity,
           })),
+          billingDetails: billingData, // include billing details here
         });
 
-        clearCart(); // clear cart after successful order
+        clearCart();
         toast.success('Order placed successfully!');
         router.push('/thank-you');
         router.refresh();
@@ -100,7 +108,7 @@ function StripeCheckoutForm() {
         type="submit"
         className="w-full bg-black text-white py-3 rounded-md hover:opacity-90 transition"
       >
-        Pay
+        Pay Now
       </button>
     </form>
   );

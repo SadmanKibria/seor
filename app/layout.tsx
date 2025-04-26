@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: 'SEOR | Affordable Jewellery for Modern Women',
   description:
     'Discover stylish, high-quality jewellery pieces at affordable prices with SEOR.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default async function RootLayout({

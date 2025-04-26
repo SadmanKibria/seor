@@ -30,16 +30,20 @@ model Product {
   orderItems  OrderItem[]
 }
 
-
 model Order {
-  id         String    @id @default(cuid())
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
-  totalPrice Float
-  status     String    @default("Pending")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  orderItems OrderItem[]
+  id          String     @id @default(cuid())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  totalPrice  Float
+  status      String     @default("Pending")
+  fullName    String
+  email       String
+  address     String
+  city        String
+  postcode    String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  orderItems  OrderItem[]
 }
 
 model OrderItem {

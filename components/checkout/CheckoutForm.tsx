@@ -1,18 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser } from '@clerk/nextjs';
-import { createOrder } from '@/app/actions/create-order';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useCart } from '@/app/context/cart-context';
 
-export default function CheckoutForm() {
-  const router = useRouter();
-  const { user } = useUser();
-  const { items, clearCart } = useCart();
+export type BillingData = {
+  fullName: string;
+  email: string;
+  address: string;
+  city: string;
+  postcode: string;
+};
 
-  const [formData, setFormData] = useState({
+export default function CheckoutForm({
+  onSave,
+}: {
+  onSave: (data: BillingData) => void;
+}) {
+  const [formData, setFormData] = useState<BillingData>({
     fullName: '',
     email: '',
     address: '',
@@ -20,87 +24,44 @@ export default function CheckoutForm() {
     postcode: '',
   });
 
-  const [errors, setErrors] = useState({
-    fullName: '',
-    email: '',
-    address: '',
-    city: '',
-    postcode: '',
-  });
+  const [errors, setErrors] = useState<Partial<BillingData>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    setErrors((prev) => ({
-      ...prev,
-      [name]: '',
-    }));
-  }
-
-  function calculateTotalPrice() {
-    return items.reduce((total, item) => total + item.price * item.quantity, 0);
+    if (errors[name as keyof BillingData]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    console.log('User from Clerk:', user);
+    const newErrors: Partial<BillingData> = {};
 
-    const newErrors: typeof errors = {
-      fullName: '',
-      email: '',
-      address: '',
-      city: '',
-      postcode: '',
-    };
+    if (!formData.fullName.trim()) newErrors.fullName = 'Required.';
+    if (!formData.email.trim()) newErrors.email = 'Required.';
+    if (!formData.address.trim()) newErrors.address = 'Required.';
+    if (!formData.city.trim()) newErrors.city = 'Required.';
+    if (!formData.postcode.trim()) newErrors.postcode = 'Required.';
 
-    // Validation
-    if (!formData.fullName.trim())
-      newErrors.fullName = 'Full Name is required.';
-    if (!formData.email.trim()) newErrors.email = 'Email is required.';
-    if (!formData.address.trim()) newErrors.address = 'Address is required.';
-    if (!formData.city.trim()) newErrors.city = 'City is required.';
-    if (!formData.postcode.trim()) newErrors.postcode = 'Postcode is required.';
-
-    const hasErrors = Object.values(newErrors).some((error) => error !== '');
-
-    if (hasErrors) {
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    if (!user?.id) {
-      toast.error('You must be logged in to place an order.');
-      return;
-    }
-
-    if (items.length === 0) {
-      toast.error('Your cart is empty.');
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
-      await createOrder({
-        userId: user.id,
-        totalPrice: calculateTotalPrice(),
-        cartItems: items.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-        })),
-      });
-
-      clearCart();
-
-      toast.success('Order placed successfully!');
-      router.push('/thank-you');
-      router.refresh();
+      onSave(formData);
+      toast.success('Billing details saved!');
     } catch (error) {
       console.error(error);
-      toast.error('Something went wrong. Please try again.');
+      toast.error('Failed to save billing info.');
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -112,100 +73,36 @@ export default function CheckoutForm() {
       <h2 className="text-lg font-serif font-light mb-6">Billing Details</h2>
 
       <div className="space-y-4">
-        {/* Full Name */}
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            placeholder="Enter your full name"
-            className="w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
-          />
-          {errors.fullName && (
-            <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">
-            Email Address
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className="w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
-          />
-          {errors.email && (
-            <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-          )}
-        </div>
-
-        {/* Address */}
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">
-            Street Address
-          </label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="House number and street name"
-            className="w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
-          />
-          {errors.address && (
-            <p className="text-xs text-red-500 mt-1">{errors.address}</p>
-          )}
-        </div>
-
-        {/* City and Postcode */}
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="block text-sm text-gray-700 mb-2">City</label>
+        {['fullName', 'email', 'address', 'city', 'postcode'].map((field) => (
+          <div key={field}>
+            <label className="block text-sm text-gray-700 mb-2 capitalize">
+              {field.replace(/([A-Z])/g, ' $1')}
+            </label>
             <input
-              type="text"
-              name="city"
-              value={formData.city}
+              type={field === 'email' ? 'email' : 'text'}
+              name={field}
+              value={formData[field as keyof BillingData]}
               onChange={handleChange}
-              placeholder="City"
+              placeholder={field === 'email' ? 'you@example.com' : ''}
               className="w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
             />
-            {errors.city && (
-              <p className="text-xs text-red-500 mt-1">{errors.city}</p>
+            {errors[field as keyof BillingData] && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors[field as keyof BillingData]}
+              </p>
             )}
           </div>
+        ))}
+      </div>
 
-          <div className="flex-1">
-            <label className="block text-sm text-gray-700 mb-2">Postcode</label>
-            <input
-              type="text"
-              name="postcode"
-              value={formData.postcode}
-              onChange={handleChange}
-              placeholder="Postcode"
-              className="w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
-            />
-            {errors.postcode && (
-              <p className="text-xs text-red-500 mt-1">{errors.postcode}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="w-full bg-gray-900 text-white py-3 text-sm rounded-none hover:bg-black transition"
-          >
-            Place Order
-          </button>
-        </div>
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-gray-900 text-white py-3 text-sm rounded-none hover:bg-black transition disabled:opacity-50"
+        >
+          {isSubmitting ? 'Saving...' : 'Save & Continue'}
+        </button>
       </div>
     </form>
   );

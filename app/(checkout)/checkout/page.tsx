@@ -1,13 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
-import CheckoutForm from '@/components/checkout/CheckoutForm';
+import CheckoutForm, { BillingData } from '@/components/checkout/CheckoutForm';
 import OrderSummary from '@/components/checkout/OrderSummary';
 import { CheckoutStripeForm } from '@/components/checkout/CheckoutStripeForm';
 
 export default function CheckoutPage() {
+  const [billingData, setBillingData] = useState<BillingData | null>(null);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -20,21 +23,20 @@ export default function CheckoutPage() {
             Enter your details to complete your purchase
           </p>
 
-          {/* When user is signed in */}
           <SignedIn>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
-              <CheckoutForm />
+              <CheckoutForm onSave={(data) => setBillingData(data)} />
               <OrderSummary />
             </div>
 
-            {/* Stripe Payment Section */}
-            <div className="max-w-2xl mx-auto mt-12">
-              <h2 className="text-xl font-semibold mb-4">Payment</h2>
-              <CheckoutStripeForm amount={5000} /> {/* temporary amount */}
-            </div>
+            {billingData && (
+              <div className="max-w-2xl mx-auto mt-12">
+                <h2 className="text-xl font-semibold mb-4">Payment</h2>
+                <CheckoutStripeForm amount={5000} billingData={billingData} />
+              </div>
+            )}
           </SignedIn>
 
-          {/* When user is not signed in */}
           <SignedOut>
             <div className="flex flex-col items-center justify-center py-20">
               <p className="text-gray-700 mb-4 text-sm">

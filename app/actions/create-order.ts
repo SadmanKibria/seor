@@ -2,13 +2,15 @@
 
 import { prisma } from '@/lib/prisma';
 import { clerkClient } from '@clerk/clerk-sdk-node';
+import { BillingData } from '@/components/checkout/CheckoutForm';
 
 export async function createOrder(data: {
   userId: string;
   totalPrice: number;
   cartItems: { productId: string; quantity: number }[];
+  billingDetails: BillingData;
 }) {
-  console.log('🔵 createOrder received userId:', data.userId);
+  console.log('createOrder received userId:', data.userId);
 
   let user = await prisma.user.findUnique({
     where: { id: data.userId },
@@ -31,15 +33,20 @@ export async function createOrder(data: {
       },
     });
 
-    console.log('✅ User created successfully in Prisma.');
+    console.log('User created successfully in Prisma.');
   }
 
-  console.log('✅ User confirmed. Creating order.');
+  console.log('User confirmed. Creating order.');
 
   return prisma.order.create({
     data: {
       userId: data.userId,
       totalPrice: data.totalPrice,
+      fullName: data.billingDetails.fullName,
+      email: data.billingDetails.email,
+      address: data.billingDetails.address,
+      city: data.billingDetails.city,
+      postcode: data.billingDetails.postcode,
       orderItems: {
         create: data.cartItems.map((item) => ({
           productId: item.productId,
