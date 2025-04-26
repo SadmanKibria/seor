@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     'Discover stylish, high-quality jewellery pieces at affordable prices with SEOR.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

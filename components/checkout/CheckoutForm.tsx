@@ -5,10 +5,12 @@ import { useUser } from '@clerk/nextjs';
 import { createOrder } from '@/app/actions/create-order';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/app/context/cart-context';
 
 export default function CheckoutForm() {
   const router = useRouter();
-  const { user } = useUser(); // Get Clerk user
+  const { user } = useUser();
+  const { items, clearCart } = useCart();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -39,8 +41,14 @@ export default function CheckoutForm() {
     }));
   }
 
+  function calculateTotalPrice() {
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    console.log('User from Clerk:', user);
 
     const newErrors: typeof errors = {
       fullName: '',
@@ -65,24 +73,27 @@ export default function CheckoutForm() {
       return;
     }
 
-    // 🛒 MOCK DATA for now - replace with your real cart items and total
-    const cartItems = [
-      { productId: 'abc123', quantity: 1 },
-      { productId: 'def456', quantity: 2 },
-    ];
-    const totalPrice = 100; // Example £100 — replace with your cart total!
-
     if (!user?.id) {
       toast.error('You must be logged in to place an order.');
+      return;
+    }
+
+    if (items.length === 0) {
+      toast.error('Your cart is empty.');
       return;
     }
 
     try {
       await createOrder({
         userId: user.id,
-        totalPrice,
-        cartItems,
+        totalPrice: calculateTotalPrice(),
+        cartItems: items.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
       });
+
+      clearCart();
 
       toast.success('Order placed successfully!');
       router.push('/thank-you');

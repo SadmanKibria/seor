@@ -9,6 +9,10 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '@/app/actions/create-payment-intent';
+import { createOrder } from '@/app/actions/create-order';
+import { useCart } from '@/app/context/cart-context';
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(
@@ -33,30 +37,59 @@ export function CheckoutStripeForm({ amount }: { amount: number }) {
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <CheckoutForm />
+      <StripeCheckoutForm />
     </Elements>
   );
 }
 
-function CheckoutForm() {
+function StripeCheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
+  const { items, clearCart } = useCart();
+  const { user } = useUser();
+  const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     if (!stripe || !elements) return;
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/thank-you`, // After success
+        return_url: `${window.location.origin}/thank-you`,
       },
+      redirect: 'if_required', // prevent full page reload
     });
 
     if (error) {
       console.log(error.message);
       toast.error(error.message || 'Payment failed.');
+      return;
+    }
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+      try {
+        await createOrder({
+          userId: user?.id || '',
+          totalPrice: items.reduce(
+            (total, item) => total + item.price * item.quantity,
+            0
+          ),
+          cartItems: items.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+          })),
+        });
+
+        clearCart(); // clear cart after successful order
+        toast.success('Order placed successfully!');
+        router.push('/thank-you');
+        router.refresh();
+      } catch (err) {
+        console.error(err);
+        toast.error('Something went wrong saving your order.');
+      }
     }
   }
 
