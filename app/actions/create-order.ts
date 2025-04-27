@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { clerkClient } from '@clerk/clerk-sdk-node';
 import { BillingData } from '@/components/checkout/CheckoutForm';
+import { sendOrderConfirmationEmail } from '@/app/actions/send-order-confirmation';
 
 export async function createOrder(data: {
   userId: string;
@@ -38,7 +39,7 @@ export async function createOrder(data: {
 
   console.log('User confirmed. Creating order.');
 
-  return prisma.order.create({
+  const order = await prisma.order.create({
     data: {
       userId: data.userId,
       totalPrice: data.totalPrice,
@@ -55,4 +56,19 @@ export async function createOrder(data: {
       },
     },
   });
+
+  // After order created send confirmation email
+  try {
+    await sendOrderConfirmationEmail({
+      to: order.email,
+      fullName: order.fullName,
+      orderId: order.id,
+      totalPrice: order.totalPrice,
+    });
+    console.log('Order confirmation email sent successfully.');
+  } catch (error) {
+    console.error('Failed to send order confirmation email:', error);
+  }
+
+  return order;
 }
