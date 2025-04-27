@@ -3,9 +3,44 @@
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { updateProduct } from '@/app/actions/update-product';
+import { useState } from 'react';
 
 export function EditProductForm({ product }: { product: any }) {
   const router = useRouter();
+  const [uploadedImages, setUploadedImages] = useState<string[]>(
+    product.images || []
+  );
+  const [uploading, setUploading] = useState(false);
+
+  async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'seor_upload');
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/di5gzj58g/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.secure_url) {
+      setUploadedImages((prev) => [...prev, data.secure_url]);
+      toast.success('Image uploaded!');
+    } else {
+      toast.error('Image upload failed.');
+    }
+
+    setUploading(false);
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -16,8 +51,6 @@ export function EditProductForm({ product }: { product: any }) {
     const description = formData.get('description') as string;
     const price = Number(formData.get('price'));
     const category = (formData.get('category') as string).toLowerCase();
-    const imagesString = formData.get('images') as string;
-    const images = imagesString.split(',').map((url) => url.trim());
 
     await updateProduct(product.id, {
       name,
@@ -25,7 +58,7 @@ export function EditProductForm({ product }: { product: any }) {
       description,
       price,
       category,
-      images,
+      images: uploadedImages,
     });
 
     toast.success('Product updated successfully!');
@@ -82,15 +115,30 @@ export function EditProductForm({ product }: { product: any }) {
         />
       </div>
 
+      {/* Cloudinary Upload */}
       <div>
-        <label className="block mb-1 font-semibold">
-          Image URLs (comma separated)
-        </label>
+        <label className="block mb-1 font-semibold">Upload New Images</label>
         <input
-          name="images"
-          defaultValue={product.images.join(', ')}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
           className="w-full border p-2 rounded"
         />
+        {uploading && (
+          <p className="text-sm text-gray-500 mt-1">Uploading...</p>
+        )}
+
+        {/* Show uploaded images */}
+        <div className="flex flex-wrap gap-2 mt-2">
+          {uploadedImages.map((url: string, index: number) => (
+            <img
+              key={index}
+              src={url}
+              alt="Uploaded"
+              className="w-20 h-20 object-cover rounded"
+            />
+          ))}
+        </div>
       </div>
 
       <button

@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { createProduct } from '@/app/actions/create-product';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -13,25 +14,57 @@ const formSchema = z.object({
   description: z.string().min(1),
   price: z.coerce.number().min(0),
   category: z.string().min(1),
-  images: z.string().min(1), // comma-separated URLs
+  images: z.array(z.string()).min(1),
 });
 
 export default function AddProductPage() {
   const router = useRouter();
+  const [uploading, setUploading] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
+  async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'seor_upload');
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/di5gzj58g/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.secure_url) {
+      setUploadedImages((prev) => [...prev, data.secure_url]);
+      setValue('images', [...uploadedImages, data.secure_url]);
+      toast.success('Image uploaded!');
+    } else {
+      toast.error('Image upload failed.');
+    }
+
+    setUploading(false);
+  }
+
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const imagesArray = data.images.split(',').map((url) => url.trim());
     await createProduct({
       ...data,
-      images: imagesArray,
     });
     toast.success('Product created successfully!');
     router.push('/admin/products');
@@ -94,13 +127,26 @@ export default function AddProductPage() {
         </div>
 
         <div>
-          <label className="block mb-1 font-semibold">
-            Image URLs (comma separated)
-          </label>
+          <label className="block mb-1 font-semibold">Upload Images</label>
           <input
-            {...register('images')}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
             className="w-full border p-2 rounded"
           />
+          {uploading && (
+            <p className="text-sm text-gray-500 mt-1">Uploading...</p>
+          )}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {uploadedImages.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt="Uploaded"
+                className="w-20 h-20 object-cover rounded"
+              />
+            ))}
+          </div>
           {errors.images && (
             <p className="text-red-500 text-sm">{errors.images.message}</p>
           )}
