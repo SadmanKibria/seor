@@ -131,7 +131,7 @@ export default async function AdminOrderDetailsPage({
       <div>
         <h2 className="text-2xl font-semibold mb-6">Ordered Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {order.orderItems.map((item) => (
+          {order.orderItems.map((item: any) => (
             <div
               key={item.id}
               className="border p-4 rounded-md shadow-sm space-y-2"
