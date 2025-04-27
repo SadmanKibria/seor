@@ -2,6 +2,16 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/format-price';
 
+type RecentOrderType = {
+  id: string;
+  status: string;
+  totalPrice: number;
+  createdAt: Date;
+  user: {
+    email: string | null;
+  } | null;
+};
+
 export default async function AdminDashboardPage() {
   const [totalOrders, totalProducts, totalSales, recentOrders] =
     await Promise.all([
@@ -43,7 +53,7 @@ export default async function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.map((order) => (
+              {recentOrders.map((order: RecentOrderType) => (
                 <tr key={order.id}>
                   <td className="py-2 px-4 border-b">{order.id}</td>
                   <td className="py-2 px-4 border-b">
