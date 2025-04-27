@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
+import { Product } from '@prisma/client';
 
 interface CategoryPageProps {
   params: { category: string };
@@ -46,7 +47,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-              {products.map((product) => (
+              {products.map((product: Product) => (
                 <Link
                   key={product.id}
                   href={`/products/${product.slug}`}

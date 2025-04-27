@@ -2,6 +2,15 @@ import { getOrders } from '@/lib/orders';
 import { formatPrice } from '@/lib/format-price';
 import Link from 'next/link';
 
+type OrderType = {
+  id: string;
+  status: string;
+  totalPrice: number;
+  createdAt: Date;
+  fullName: string | null;
+  address: string | null;
+};
+
 export default async function AdminOrdersPage() {
   const orders = await getOrders();
 
@@ -25,7 +34,7 @@ export default async function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders.map((order: OrderType) => (
                 <tr key={order.id} className="border-b hover:bg-gray-50">
                   <td className="py-3 px-6">
                     <Link
