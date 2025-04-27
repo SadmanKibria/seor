@@ -3,6 +3,14 @@ import { DeleteProductButton } from '@/components/admin/DeleteProductButton';
 import { formatPrice } from '@/lib/format-price';
 import Link from 'next/link';
 
+type ProductType = {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  createdAt: Date;
+};
+
 export default async function AdminProductsPage() {
   const products = await getProducts();
 
@@ -35,7 +43,7 @@ export default async function AdminProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {products.map((product: ProductType) => (
                 <tr key={product.id} className="border-t">
                   <td className="py-4 px-6 text-sm">{product.name}</td>
                   <td className="py-4 px-6 text-sm capitalize">
