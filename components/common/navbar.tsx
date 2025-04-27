@@ -44,7 +44,7 @@ export default function Navbar() {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    href="/products/earrings"
+                    href="/products/categories/earrings"
                     className="text-sm font-medium tracking-wide text-gray-700 transition-colors hover:text-black"
                   >
                     EARRINGS
@@ -52,7 +52,7 @@ export default function Navbar() {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    href="/products/necklaces"
+                    href="/products/categories/necklaces"
                     className="text-sm font-medium tracking-wide text-gray-700 transition-colors hover:text-black"
                   >
                     NECKLACES
@@ -128,7 +128,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href="/products/earrings"
+                    href="/products/categories/earrings"
                     className="text-sm font-medium tracking-wide"
                     onClick={() => setIsOpen(false)}
                   >
@@ -136,7 +136,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href="/products/necklaces"
+                    href="/products/categories/necklaces"
                     className="text-sm font-medium tracking-wide"
                     onClick={() => setIsOpen(false)}
                   >

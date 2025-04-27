@@ -15,7 +15,7 @@ export function EditProductForm({ product }: { product: any }) {
     const slug = formData.get('slug') as string;
     const description = formData.get('description') as string;
     const price = Number(formData.get('price'));
-    const category = formData.get('category') as string;
+    const category = (formData.get('category') as string).toLowerCase();
     const imagesString = formData.get('images') as string;
     const images = imagesString.split(',').map((url) => url.trim());
 

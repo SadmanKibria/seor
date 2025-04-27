@@ -22,7 +22,7 @@ export default function CategorySection() {
               <h3 className="font-serif text-2xl font-light text-white mb-4 tracking-wide">
                 Earrings
               </h3>
-              <Link href="/products/earrings">
+              <Link href="/products/categories/earrings">
                 <span className="inline-block bg-white text-gray-900 px-6 py-2 text-sm tracking-widest hover:bg-gray-900 hover:text-white transition-colors duration-300">
                   SHOP NOW
                 </span>
@@ -46,7 +46,7 @@ export default function CategorySection() {
               <h3 className="font-serif text-2xl font-light text-white mb-4 tracking-wide">
                 Necklaces
               </h3>
-              <Link href="/products/necklaces">
+              <Link href="/products/categories/necklaces">
                 <span className="inline-block bg-white text-gray-900 px-6 py-2 text-sm tracking-widest hover:bg-gray-900 hover:text-white transition-colors duration-300">
                   SHOP NOW
                 </span>

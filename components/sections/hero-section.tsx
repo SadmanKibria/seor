@@ -29,7 +29,7 @@ export default function HeroSection() {
             asChild
             className="bg-gray-900 hover:bg-black text-white rounded-none px-8 py-6 h-auto text-sm tracking-widest transition-all duration-300"
           >
-            <Link href="/products/earrings">SHOP EARRINGS</Link>
+            <Link href="/products">SHOP LATEST</Link>
           </Button>
         </div>
       </div>

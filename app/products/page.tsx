@@ -1,37 +1,14 @@
+import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
 
-// Sample product data
-const products = [
-  {
-    id: 'silver-hoop-earrings',
-    name: 'Silver Hoop Earrings',
-    price: 14.99,
-    image: '/temp-img.jpg',
-  },
-  {
-    id: 'crystal-stud-earrings',
-    name: 'Crystal Stud Earrings',
-    price: 12.99,
-    image: '/temp-img.jpg',
-  },
-  {
-    id: 'beaded-necklace',
-    name: 'Beaded Pendant Necklace',
-    price: 15.5,
-    image: '/temp-img.jpg',
-  },
-  {
-    id: 'gold-chain-bracelet',
-    name: 'Gold-Plated Chain Bracelet',
-    price: 19.99,
-    image: '/temp-img.jpg',
-  },
-];
+export default async function ProductsPage() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
 
-export default function ProductsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -45,12 +22,12 @@ export default function ProductsPage() {
             {products.map((product) => (
               <Link
                 key={product.id}
-                href={`/products/${product.id}`}
+                href={`/products/${product.slug}`}
                 className="group"
               >
                 <div className="mb-4 overflow-hidden">
                   <Image
-                    src={product.image || '/placeholder.svg'}
+                    src={product.images[0] || '/placeholder.svg'}
                     alt={product.name}
                     width={400}
                     height={400}
