@@ -26,7 +26,7 @@ export default function CraftsmanshipSection() {
 
             <div className="md:w-2/3 order-1 md:order-2 text-left">
               <p className="text-gray-600 leading-relaxed mb-5 font-light">
-                At SEOR, we believe beautiful jewelry shouldn't come with a
+                At SEOR, we believe beautiful jewelry shouldn&apos;t come with a
                 luxury price tag. Each piece is thoughtfully designed and
                 carefully crafted using quality materials that look premium
                 without the markup.
@@ -34,7 +34,7 @@ export default function CraftsmanshipSection() {
               <p className="text-gray-600 leading-relaxed font-light">
                 We source directly from trusted manufacturers and sell directly
                 to you, cutting out the middlemen and passing the savings on.
-                The result? Stylish, on-trend jewelry that's accessible to
+                The result? Stylish, on-trend jewelry that&apos;s accessible to
                 everyone, with prices ranging from £10 to £25.
               </p>
             </div>

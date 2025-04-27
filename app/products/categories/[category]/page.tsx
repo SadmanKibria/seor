@@ -31,7 +31,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {products.length === 0 ? (
             <div className="text-center py-20">
               <h2 className="text-xl font-semibold mb-4">
-                No products found in "{params.category}"
+                No products found in &quot;{params.category}&quot;
               </h2>
               <p className="text-gray-600 mb-6">
                 It looks like there are no products available in this category

@@ -1,11 +1,21 @@
 'use client';
 
+type ProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  category: string;
+  images: string[];
+};
+
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { updateProduct } from '@/app/actions/update-product';
 import { useState } from 'react';
 
-export function EditProductForm({ product }: { product: any }) {
+export function EditProductForm({ product }: { product: ProductType }) {
   const router = useRouter();
   const [uploadedImages, setUploadedImages] = useState<string[]>(
     product.images || []
