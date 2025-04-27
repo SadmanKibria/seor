@@ -23,6 +23,20 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  authors: [{ name: 'Sadman Kibria' }],
+  keywords: [
+    'jewellery',
+    'earrings',
+    'necklaces',
+    'affordable jewellery',
+    'modern women jewellery',
+    'contemporary jewellery',
+    'SEOR',
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({
