@@ -1,4 +1,11 @@
 import { prisma } from '@/lib/prisma';
+type ProductFromPrisma = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  images: string[];
+};
 
 export async function getProducts() {
   const products = await prisma.product.findMany({
@@ -11,7 +18,7 @@ export async function getProducts() {
     },
   });
 
-  return products.map((product) => ({
+  return products.map((product: ProductFromPrisma) => ({
     id: product.id,
     name: product.name,
     slug: product.slug,

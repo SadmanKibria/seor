@@ -4,7 +4,6 @@ import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 
-// change it after
 const allowedAdmins = ['sadmankibria3@gmail.com'];
 
 export default function AdminGuard({ children }: { children: ReactNode }) {
