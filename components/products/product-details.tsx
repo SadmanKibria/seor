@@ -18,6 +18,9 @@ type ProductDetailsProps = {
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const { addItem } = useCart();
+  const [selectedImage, setSelectedImage] = useState(
+    product.images?.[0] || '/placeholder.svg'
+  );
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   function handleAddToCart() {
@@ -25,7 +28,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images?.[0] || '/placeholder.svg',
+      image: selectedImage,
       quantity: 1,
     });
 
@@ -35,19 +38,42 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
       {/* Product Images */}
-      <div className="relative">
-        {isImageLoading && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
-        )}
-        <Image
-          src={product.images?.[0] || '/placeholder.svg'}
-          alt={product.name}
-          width={600}
-          height={600}
-          className="w-full h-auto object-contain"
-          priority
-          onLoadingComplete={() => setIsImageLoading(false)}
-        />
+      <div className="flex flex-col space-y-4">
+        <div className="relative w-full overflow-hidden rounded-md">
+          {isImageLoading && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
+          )}
+          <Image
+            src={selectedImage}
+            alt={product.name}
+            width={600}
+            height={600}
+            className="w-full h-auto object-contain"
+            priority
+            onLoadingComplete={() => setIsImageLoading(false)}
+          />
+        </div>
+
+        {/* Thumbnails */}
+        <div className="flex space-x-4 mt-2">
+          {product.images.map((img, idx) => (
+            <div
+              key={idx}
+              onClick={() => setSelectedImage(img)}
+              className={`w-20 h-20 overflow-hidden rounded-md cursor-pointer border-2 ${
+                selectedImage === img ? 'border-gray-800' : 'border-transparent'
+              }`}
+            >
+              <Image
+                src={img}
+                alt={`${product.name} thumbnail ${idx + 1}`}
+                width={80}
+                height={80}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Product Details */}
