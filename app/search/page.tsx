@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/common/navbar';
 import Footer from '@/components/common/footer';
 import ProductCard from '@/components/home/product-card';
-import { notFound } from 'next/navigation';
 
 type SearchPageProps = {
   searchParams: { query?: string };
@@ -38,7 +37,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : products.length === 0 ? (
           <div className="text-center space-y-4">
             <h1 className="text-2xl font-bold">
-              No products found for "{searchQuery}"
+              No products found for &quot;{searchQuery}&quot;
             </h1>
             <p className="text-gray-600">
               Try searching for something else or browse our latest collections.
@@ -47,7 +46,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : (
           <>
             <h1 className="text-3xl font-bold mb-8 text-center">
-              Search Results for "{searchQuery}"
+              Search Results for &quot;{searchQuery}&quot;
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {products.map((product) => (
