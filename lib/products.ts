@@ -6,13 +6,23 @@ export async function getProducts() {
     select: {
       id: true,
       name: true,
+      slug: true,
       category: true,
       price: true,
       createdAt: true,
+      images: true,
     },
   });
 
-  return products;
+  return products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    category: product.category,
+    price: product.price,
+    createdAt: product.createdAt,
+    image: product.images?.[0] || '/placeholder.svg',
+  }));
 }
 
 export async function addProduct(data: {
