@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, ShoppingBag, User, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,9 @@ import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
 
   return (
     <header className="border-b border-gray-100">
@@ -69,6 +73,16 @@ export default function Navbar() {
               <Input
                 type="search"
                 placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchTerm.trim() !== '') {
+                    router.push(
+                      `/search?query=${encodeURIComponent(searchTerm)}`
+                    );
+                    setIsOpen(false);
+                  }
+                }}
                 className="w-[180px] h-8 rounded-md pl-8 text-xs"
               />
               <Search className="absolute left-2 h-3.5 w-3.5 text-gray-500" />
@@ -150,7 +164,17 @@ export default function Navbar() {
                     <Input
                       type="search"
                       placeholder="Search..."
-                      className="w-full h-9 rounded-md pl-8 text-sm"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && searchTerm.trim() !== '') {
+                          router.push(
+                            `/search?query=${encodeURIComponent(searchTerm)}`
+                          );
+                          setIsOpen(false);
+                        }
+                      }}
+                      className="w-[180px] h-8 rounded-md pl-8 text-xs"
                     />
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                   </div>

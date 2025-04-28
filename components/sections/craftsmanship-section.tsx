@@ -16,7 +16,7 @@ export default function CraftsmanshipSection() {
           <div className="flex flex-col-reverse md:flex-row items-center gap-10">
             <div className="md:w-1/3 order-2 md:order-1">
               <Image
-                src="/temp-img.jpg?height=400&width=300"
+                src="/craft.png?height=400&width=300"
                 alt="Jewelry craftsmanship"
                 width={300}
                 height={400}

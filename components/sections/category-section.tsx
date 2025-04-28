@@ -10,7 +10,7 @@ export default function CategorySection() {
           <div className="group relative overflow-hidden bg-white rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative h-[400px]">
               <Image
-                src="/temp-img.jpg?height=800&width=600"
+                src="/1.png?height=800&width=600"
                 alt="Earrings Collection"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -34,7 +34,7 @@ export default function CategorySection() {
           <div className="group relative overflow-hidden bg-white rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative h-[400px]">
               <Image
-                src="/temp-img.jpg?height=800&width=600"
+                src="/2.png?height=800&width=600"
                 alt="Necklaces Collection"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
