@@ -47,6 +47,9 @@ export default async function AdminOrderDetailsPage({
 
   async function handleMarkCompleted() {
     'use server';
+    if (!order) {
+      throw new Error('Order not found');
+    }
     await markOrderAsCompleted(order.id);
     revalidatePath(`/admin/orders/${order.id}`);
     redirect(`/admin/orders/${order.id}`);
@@ -54,6 +57,9 @@ export default async function AdminOrderDetailsPage({
 
   async function handleMarkPending() {
     'use server';
+    if (!order) {
+      throw new Error('Order not found');
+    }
     await markOrderAsPending(order.id);
     revalidatePath(`/admin/orders/${order.id}`);
     redirect(`/admin/orders/${order.id}`);
