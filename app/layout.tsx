@@ -4,6 +4,7 @@ import { CartProvider } from '@/app/context/cart-context';
 import { Toaster } from 'sonner';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
+import { Analytics } from '@vercel/analytics/react';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -54,6 +55,7 @@ export default async function RootLayout({
             {children}
             <Toaster richColors position="top-center" />
           </CartProvider>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
